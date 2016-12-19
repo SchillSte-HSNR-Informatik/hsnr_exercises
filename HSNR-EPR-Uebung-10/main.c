@@ -32,6 +32,7 @@ void print_tage(char *tage_ptr[], int n)
     }
     tage_ptr[2][4] = 'z';
 }
+
 void main()
 {
     char **tage;

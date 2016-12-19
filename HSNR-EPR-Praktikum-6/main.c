@@ -1,65 +1,69 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #define MAX 1000
 
 ///definiere struct mit Name und Nummer der Studierenden
-struct studierende{
+/// setze typedef ein
+typedef struct{
     int matrikelNummer;
-    char name;
-};
+    char *name;
+} students;
 
 ///gibt Liste der Studierenden aus
-void ausgebenStudierende(struct studierende *s[], int anzahl){
-    printf("\nListe der Studierenden\n"
-                   "Matrikelnummer: \t Name:");
-    for (int i=0; i<anzahl;i++){
-        printf("\n%d \t %s", s[i]->matrikelNummer, s[i]->name);
+void ausgebenStudierende(students *st, int anzahl){
+    for (int i=0; i<anzahl; i++){
+        printf("\n%d", (st+i)->matrikelNummer);
     }
+    for (int i=0; i<anzahl; i++){
+        printf("\n%s", (st+i)->name);
+    }
+    return;
 }
 
 ///keine Übergabe bisheriger Werte?
 ///Diese Funktion löscht alle vorherigen Eingaben.
-struct studierende *dateneinlesen(){
-    struct studierende *stud;
-    return stud;
+char **chareinlesen() {
+    char **tage;
+    tage = (char**) calloc(3,sizeof(char*));
+    tage[0] = (char*) malloc((strlen("Montag")+1) * sizeof(char));
+    strcpy(tage[0], "Montag");
+    tage[1] = (char*) calloc(strlen("Dienstag")+1, sizeof(char));
+    strcpy(tage[1], "Dienstag");
+    tage[2] = (char*) calloc(1, sizeof("Mittwoch"));
+    strcpy(tage[2], "Mittwoch");
+    return tage;
 }
 
-///Suche Nummer in Feld, gebe Stelle zurueck
-///-1 = nicht gefunden
-int sucheNachNummer(struct studierende *s[], int anzahl, int matrikelNummer){
-    for (int i=0; i<anzahl; i++) {
-        if (matrikelNummer == s[i]->matrikelNummer) return i;
-    }
-    return -1;
+int *tageinlesen(){
+    int *tag;
+    tag = (int *) calloc (3, sizeof(int*));
+    tag[0]=1;
+    tag[1]=3;
+    tag[2]=58;
+    return tag;
 }
 
-///Suche Name in Feld, gebe stelle zurueck
-///-1 = nicht gefunden
-int sucheNachName(struct studierende *s[], int anzahl, char *name){
+void ausgabe(char **tage, int *tag, int anzahl){
     for (int i=0; i<anzahl; i++){
-        if (strcmp(name, s[i]->name)==0) return i;
+        printf("\n%d, %s", *(tag+i), *(tage+i));
     }
-    return -1;
 }
 
-///Loesche Eintrag anhand des Indices
-void loesche(struct studierende *s[], int *anzahl, int stelle){
-    for (int i=stelle; i<anzahl-1; i++){
-        s[i] = s[i+1];
-    }
-    *anzahl = *anzahl-1;
-}
-
-///Sortierung mit Quicksort
-void sortiereAbsteigendNachName(struct studierende *s[], int anzahl){
-
+students *dateneinlesen(){
+    students *daten;
+    return daten;
 }
 
 ///Hauptmenue
 int main() {
-    struct studierende stud[MAX];
-    int anzahl=0;
-    ausgebenStudierende(stud, anzahl);
-    loesche (stud, &anzahl, 5);
-    sucheNachName(stud, anzahl, 'fkjansf');
+    int *a;
+    a = (int *) malloc( 5 * sizeof(int));
+    int b[] = {1,2,3,4,5};
+    a = b;
+    for (int i=0; i<5;i++) printf("\n%d", a[i]);
+    a = (int *) realloc (a, 10*sizeof(int));
+    for (int i=0; i<5;i++) printf("\n%d", a[i]);
+    
+
 }
