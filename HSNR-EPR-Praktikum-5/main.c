@@ -1,8 +1,4 @@
 #include <stdio.h>
-//^fuer strcmp zum beenden des programms verwendet. S 491 im skript.
-//etwas weiter hinten werden auch  "isalpha(char)" und "tolower(char)" aus der ctype.h erwaehnt
-//statt die hier zu verwenden bleibt diese Loesung auf manuelles char-schubsen beschraenkt.
-
 ///gibt zurueck, ob zeichenkette ein palindrom ist (rueckwaerts und vorwaerts gelesen gleich)
 int palindrom(char in[]){
     int n = 0;
