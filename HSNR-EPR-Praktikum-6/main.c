@@ -132,7 +132,7 @@ void quicksortFktPtr (students_t *studierende[], int (*vergleichsFunktion)(stude
     }
 }
 
-///sortiere absteigend nach name
+///Sortierung nach Name und Nummer, mit Uebergabe von Fktspointer
 void sortiereAbsteigendNachName(students_t *studierende[], int anzahl){
     if (anzahl > 1){
         int left = 0;
