@@ -46,6 +46,7 @@ void main()
     printf("%s\n", tage[1]); //prints "Dienstag"
     printf("%s\n", *(tage+1)); //prints "Dienstag" too
     printf("%s\n", *(tage+2)+4); //prints Mittwoch from it's 5th letter - "woch"
+    printf("%c\n", *(*(tage+2)+4)+2); //prints the 5th letter of the 3rd entry of tage, increased by 2: Mittwoch - w+2 -> y
     print_tage(tage,3); //prints "Montag\nDienstag\nMittwoch"
     printf("%s\n", tage[2]);//prints "Mittzoch", as the previously executed print_tage replaced 'w' with 'z'
 

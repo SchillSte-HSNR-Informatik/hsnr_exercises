@@ -1,7 +1,7 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX 1000
+#define MAX 5
 
 ///struct als neuen type deklarieren
 typedef struct{
@@ -18,8 +18,8 @@ students_t *dateneinlesen(){
     //Name nur einlesen falls neuer Eintrag gewuenscht ist(Matrikelnr ungleich 0 war)
     if (a->matrikelNummer != 0) {
         printf("Name eingeben ");
-        char c[16];
-        scanf("%15s", &c);
+        char c[1000];
+        scanf("%15s", c);
         a->name = strdup(c); //strdup funktion stellt Speicherplatz mit malloc bereit, kopiert Inhalt von c dorthin
         //und liefert einen Pointer zurück
     }
@@ -38,11 +38,15 @@ void studierendeAusgeben(students_t *studierende[], int anzahl){
 
 ///loesche einen eintrag aus dem Feld und ruecke die folgenden auf
 void loesche(students_t *studierende[], int *anzahl, int stelle){
-    for (int i=stelle; i<*anzahl; i++){
-        studierende[i]=studierende[i+1];
+    if (stelle >=0  && *anzahl > stelle){
+        for (int i=stelle; i<*anzahl; i++){
+            studierende[i]=studierende[i+1];
+        }
+        *anzahl = *anzahl - 1;
     }
-    *anzahl = *anzahl - 1;
+    else printf("Eintrag existiert nicht\n");
 }
+
 
 ///suche einen namen im feld, gebe seine stelle zurueck
 int sucheName(students_t *studierende[], int anzahl, char *name){
@@ -86,6 +90,7 @@ void quicksortNameAb(students_t *studierende[], int left, int right){
     if (left < right){
         int i = left;
         int j = right;
+
         char *vgl = studierende[(i+j)/2]->name;
         do{
             while (strcmp(studierende[i]->name, vgl) > 0){
@@ -140,15 +145,19 @@ void sortiereAbsteigendNachName(students_t *studierende[], int anzahl){
         printf("Sortiert nach Name, absteigend\n");
         quicksortNameAb(studierende, left, right);
         studierendeAusgeben(studierende, anzahl);
+
         printf("Sortiert nach Name, aufsteigend\n");
         quicksortFktPtr(studierende, istKleinerNachName, left, right);
         studierendeAusgeben(studierende, anzahl);
+
         printf("sortiert nach Name, absteigend\n");
         quicksortFktPtr(studierende, istGroesserNachName, left, right);
         studierendeAusgeben(studierende, anzahl);
+
         printf("sortiert nach Nummer, aufsteigend\n");
         quicksortFktPtr(studierende, istKleinerNachNummer, left, right);
         studierendeAusgeben(studierende, anzahl);
+
         printf("sortiert nach Nummer, absteigend\n");
         quicksortFktPtr(studierende, istGroesserNachNummer, left, right);
         studierendeAusgeben(studierende, anzahl);
@@ -173,11 +182,11 @@ int main() {
             }
         }
         else running = 0;
-    } while (running && anzahl < 1000);
+    } while (running && anzahl < MAX);
 
     //ungenutzten letzten platz freigeben
     //immatrikuliert = realloc (immatrikuliert, anzahl*sizeof(students_t *));
-    studierendeAusgeben(immatrikuliert, anzahl);
+    //studierendeAusgeben(immatrikuliert, anzahl);
 
     //Navigation
     running = 1;
@@ -185,7 +194,7 @@ int main() {
         //menue
         int a;
         int stelle=-1;
-        char n[20];
+        char n[1000];
         char *name;
         printf("\n\nHauptmenue\n----------\n");
         printf("(1) Studierende Anzeigen "
@@ -198,32 +207,61 @@ int main() {
         scanf("%d", &a);
         switch(a) {
             case 1:
+                //Alle Eintraege ausgeben
+                if (anzahl < 1) {
+                    printf("Die Liste ist leer \n");
+                    break;
+                }
                 studierendeAusgeben(immatrikuliert, anzahl);
                 break;
             case 2:
+                if (anzahl < 1) {
+                    printf("Die Liste ist leer \n");
+                    break;
+                }
+                //Eintrag nach Index loeschen
                 printf("\nWelche Stelle soll geloescht werden? ");
                 scanf("%d", &stelle);
-                if (stelle != -1) loesche(immatrikuliert, &anzahl, stelle);
-                printf("neue Anzahl: %d", anzahl);
+                loesche(immatrikuliert, &anzahl, stelle);
+                //printf("neue Anzahl: %d", anzahl);
                 break;
             case 3:
-                student = dateneinlesen();
-                if (student->matrikelNummer != 0) { //wenn Matrikelnummer nicht 0 ist:
-                    immatrikuliert = realloc(immatrikuliert, (anzahl + 1) *
-                                                             sizeof(students_t *)); //speicherplatz für vorhandene + naechsten Eintrag reservieren
-                    immatrikuliert[anzahl++] = student; //neuen Eintrag hinzufügen, anzahl erhöhen
+                //Eintrag hinzufuegen
+                if (anzahl<MAX){
+                    student = dateneinlesen();
+                    if (student->matrikelNummer != 0) { //wenn Matrikelnummer nicht 0 ist:
+                        if (sucheNummer(immatrikuliert, anzahl, student->matrikelNummer) != -1) {
+                            printf("Diese Matrikelnummer ist bereits eingetragen\n");
+                        }
+                        else {
+                            immatrikuliert = (students_t **) realloc(immatrikuliert, (anzahl + 1) *
+                                                                                     sizeof(students_t *)); //speicherplatz für vorhandene + naechsten Eintrag reservieren
+                            immatrikuliert[anzahl++] = student; //neuen Eintrag hinzufügen, anzahl erhöhen
+                        }
 
+                    }
                 }
+                else printf ("Es sind keine weiteren Eintraege moeglich\n");
                 break;
             case 4:
+                if (anzahl < 1) {
+                    printf("Die Liste ist leer \n");
+                    break;
+                }
+                //Feld nach Name durchsuchen und Index ausgeben
                 printf("\nNach welchem Namen soll gesucht werden? ");
-                scanf("%20s", &n);
+                scanf("%s", n);
                 name = n;
                 stelle = sucheName(immatrikuliert, anzahl, name);
                 if (stelle >-1) printf("Der gesuchte Name steht an Stelle %d der Liste\n", stelle);
                 else printf("Der gesuchte Name wurde nicht gefunden\n");
                 break;
             case 5:
+                if (anzahl < 1) {
+                    printf("Die Liste ist leer \n");
+                    break;
+                }
+                //Feld nach Matrikelnummer durchsuchen und Index ausgeben
                 printf("\nNach welcher Matrikelnummer soll gesucht werden? ");
                 scanf("%d", &stelle);
                 stelle = sucheNummer(immatrikuliert, anzahl, stelle);
@@ -231,6 +269,12 @@ int main() {
                 else printf("Die gesuchte Matrikelnummer wurde nicht gefunden\n");
                 break;
             case 6:
+                if (anzahl < 1) {
+                    printf("Die Liste ist leer \n");
+                    break;
+                }
+                //in der ursprünglichen Sortierfunktion werden alle vorgeschlagenen Sortierungen nacheinander
+                //ausgeführt und ausgegeben.
                 sortiereAbsteigendNachName(immatrikuliert, anzahl);
                 break;
             case 7:
