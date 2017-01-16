@@ -19,7 +19,7 @@ students_t *dateneinlesen(){
     if (a->matrikelNummer != 0) {
         printf("Name eingeben ");
         char c[1000];
-        scanf("%15s", c);
+        scanf("%999s", c);
         a->name = strdup(c); //strdup funktion stellt Speicherplatz mit malloc bereit, kopiert Inhalt von c dorthin
         //und liefert einen Pointer zurück
     }
@@ -234,14 +234,14 @@ int main() {
                             printf("Diese Matrikelnummer ist bereits eingetragen\n");
                         }
                         else {
-                            immatrikuliert = (students_t **) realloc(immatrikuliert, (anzahl + 1) *
-                                                                                     sizeof(students_t *)); //speicherplatz für vorhandene + naechsten Eintrag reservieren
+                            immatrikuliert = (students_t **) realloc(immatrikuliert,
+                                             (anzahl + 1) * sizeof(students_t *)); //speicherplatz für vorhandene + naechsten Eintrag reservieren
                             immatrikuliert[anzahl++] = student; //neuen Eintrag hinzufügen, anzahl erhöhen
                         }
 
                     }
                 }
-                else printf ("Es sind keine weiteren Eintraege moeglich\n");
+                else printf ("Es sind keine weiteren Eintraege moeglich - das Maximum ist %d\n", MAX);
                 break;
             case 4:
                 if (anzahl < 1) {

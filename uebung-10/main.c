@@ -12,7 +12,7 @@
 
 ///filling the declaration, declaration with type
 ///and definition of a related variable in one go
-struct klausur { //providing a name for the struct is not necessary
+struct klausur{ //providing a name for the struct is not necessary
     struct{
         int tag;
         int monat;
@@ -31,6 +31,14 @@ void print_tage(char *tage_ptr[], int n)
         printf("%s\n", tage_ptr[i]);
     }
     tage_ptr[2][4] = 'z';
+}
+
+void changeName(struct klausur *var) {
+    char name[] = "narf";
+    (*var).nachname =malloc(sizeof(char) * (strlen(name) + 1));
+    strncpy((*var).nachname, name, 5);
+    //var->nachname = malloc(sizeof(char) * (strlen(name) + 1));
+    //strncpy(var->nachname, name, strlen(name)+1);
 }
 
 void main()
@@ -63,4 +71,18 @@ void main()
     printf("\n%s",var.fach);
     printf("\n%s",var.nachname);
     printf("\n%d",var.note);
+    printf("Tag.Monat.Jahr: %d.%d.%d\n",var.tagDerKlausur.tag,var.tagDerKlausur.monat, var.tagDerKlausur.jahr);
+
+
+    struct klausur var2 = {{1}, 2, 2, "derp", "herp"};
+    printf("Tag.Monat.Jahr: %d.%d.%d\n",var2.tagDerKlausur.tag,var2.tagDerKlausur.monat, var2.tagDerKlausur.jahr);
+    printf("\n%s",var2.fach);
+    printf("\n%s",var2.nachname);
+    printf("\n%d",var2.note);
+
+    changeName(&var2);
+    printf("\n%s",var2.nachname);
+    (&(*(&var2)))->nachname = strdup("herp");
+    printf("\n%s",var2.nachname);
+
 }
