@@ -32,6 +32,7 @@ void studierendeAusgeben(students_t *studierende[], int anzahl){
     printf("--------------------------------------\n");
     for (int i = 0; i < anzahl; i++){
         printf("|%14d | %19s|\n", studierende[i]->matrikelNummer, studierende[i]->name);
+        printf("|%14p | %19p|\n", &studierende[i]->matrikelNummer, &studierende[i]->name);
     }
     printf("--------------------------------------\n");
 }
@@ -39,13 +40,57 @@ void studierendeAusgeben(students_t *studierende[], int anzahl){
 ///loesche einen eintrag aus dem Feld und ruecke die folgenden auf
 void loesche(students_t *studierende[], int *anzahl, int stelle){
     if (stelle >=0  && *anzahl > stelle){
-        for (int i=stelle; i<*anzahl; i++){
+        for (int i=stelle; i<*anzahl-1; i++){
+            printf("%d, %d",studierende[i]->matrikelNummer,studierende[i+1]->matrikelNummer );
+            studierende[i]->matrikelNummer=studierende[i+1]->matrikelNummer;
+            free(studierende[i]->name);
+            studierende[i]->name = strdup(studierende[i+1]->name);
+        }
+        *anzahl = *anzahl - 1;
+        free(studierende[*anzahl]->name);
+        free(studierende[*anzahl]);
+    }
+    else printf("Eintrag existiert nicht\n");
+}
+/*
+void loesche(students_t *studierende[], int *anzahl, int stelle){
+    if (stelle >=0  && *anzahl > stelle){
+        //free auf den allokierten Speicher des namens an der stelle (aber nicht den platz für pointer!)
+        free(studierende[stelle]->name);
+        for (int i=stelle; i<*anzahl-1; i++){
+            printf("%d, %d",studierende[i]->matrikelNummer,studierende[i+1]->matrikelNummer );
+            //studierende[i]=studierende[i+1];
+            //übernehme pointer elemente
+            studierende[i]->matrikelNummer=studierende[i+1]->matrikelNummer;
+            studierende[i]->name = studierende[i+1]->name;
+        }
+        *anzahl = *anzahl - 1;
+        //free den letzten Pointersatz (aber nicht den name, auf den noch ein pointer zeigt)
+        free(studierende[*anzahl]);
+    }
+    else printf("Eintrag existiert nicht\n");
+}*/
+
+/*
+//diese variante funktioniert
+//aber warum ist bei studierende[stelle] speicherplatz zur Übernahme des Strukturpointers
+//nachdem zuvor free() darauf angewandt wurde?
+void loesche(students_t *studierende[], int *anzahl, int stelle){
+    if (stelle >=0  && *anzahl > stelle){
+        //free zeiger auf name in struktur und zeiger auf struktur an stelle
+        free(studierende[stelle]->name);
+        free(studierende[stelle]);
+        for (int i=stelle; i<*anzahl-1; i++){
+            printf("%d, %d",studierende[i]->matrikelNummer,studierende[i+1]->matrikelNummer );
+            //übernehme zeiger auf spätere strukturen
             studierende[i]=studierende[i+1];
         }
         *anzahl = *anzahl - 1;
     }
     else printf("Eintrag existiert nicht\n");
 }
+*/
+
 
 
 ///suche einen namen im feld, gebe seine stelle zurueck
@@ -86,10 +131,10 @@ int istGroesserNachName(students_t *stud1, students_t *stud2){
 ///Seiten, ob ein groeßerer/kleinerer Wert vorhanden ist. In diesem Fall werden die Positionen vertauscht.
 ///Wenn die Pruefung sich in der Mitte getroffen hat, wird rekursiv fuer die Abschnitte links und rechts dasselbe
 ///Verfahren ausgefuehrt, bis schliesslich alle Werte sortiert sind.
-void quicksortNameAb(students_t *studierende[], int left, int right){
-    if (left < right){
-        int i = left;
-        int j = right;
+void quicksortNameAb(students_t *studierende[], int links, int rechts){
+    if (links < rechts){
+        int i = links;
+        int j = rechts;
 
         char *vgl = studierende[(i+j)/2]->name;
         do{
@@ -107,8 +152,8 @@ void quicksortNameAb(students_t *studierende[], int left, int right){
                 j= j-1;
             }
         }while (i < j);
-        quicksortNameAb(studierende, left, j);
-        quicksortNameAb(studierende, i, right);
+        quicksortNameAb(studierende, links, j);
+        quicksortNameAb(studierende, i, rechts);
     }
 }
 
@@ -285,4 +330,5 @@ int main() {
                 break;
         }
     }while (running);
+    free(immatrikuliert);
 }
